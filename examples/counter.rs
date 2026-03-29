@@ -29,6 +29,9 @@ async fn main() {
     db.use_db("testing")
         .await
         .expect("Surreal database initialization failure");
+    db.query("DEFINE TABLE sessions")
+        .await
+        .expect("Failed to define table");
 
     // This sets up the store to use the `sessions` table.
     let session_store = SurrealSessionStore::new(db.clone(), "sessions".to_string());

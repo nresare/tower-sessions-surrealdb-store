@@ -42,7 +42,7 @@ pub struct SurrealSessionStore<DB: std::fmt::Debug + surrealdb::Connection> {
 impl<DB: std::fmt::Debug + surrealdb::Connection> SurrealSessionStore<DB> {
     /// Create a new SurrealDB session store with the provided client,
     /// storing sessions in the given table. Note that the table must
-    /// be defined ahead of time if strict mode is enabled.
+    /// be defined ahead of time.
     pub fn new(client: Surreal<DB>, session_table: String) -> Self {
         Self {
             client,
@@ -144,6 +144,10 @@ mod test {
         db.use_db("testing")
             .await
             .expect("Surreal database initialization failure");
+        db.query("DEFINE table $table")
+            .bind(("table", SESSIONS_TABLE))
+            .await
+            .expect("Failed to define table");
         db
     }
 
